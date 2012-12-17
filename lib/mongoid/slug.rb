@@ -116,10 +116,12 @@ module Mongoid
     def build_slug
       _new_slug = find_unique_slug
       self._slugs.delete(_new_slug)
-      if !!self.history
-        self._slugs << _new_slug
-      else
-        self._slugs = [_new_slug]
+      if !_new_slug.blank?
+        if !!self.history
+          self._slugs << _new_slug
+        else
+          self._slugs = [_new_slug]
+        end
       end
       true
     end
@@ -146,7 +148,7 @@ module Mongoid
     # @return [String] A string which Action Pack uses for constructing an URL
     # to this record.
     def to_param
-      slug || super
+      slug.blank? ? super : slug
     end
 
     # @return [String] the slug, or nil if the document does not have a slug.
